@@ -5,7 +5,7 @@ function Title() {
         <div className="title">
             <h1>firegram</h1>
             <h2>Your Pictures</h2>
-            <p>You can further verify that the database is operational by connecting. </p>
+            <p>An image gallery upload your memories and enjoy them. </p>
         </div>
     )
 }

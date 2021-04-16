@@ -23,7 +23,7 @@ const changeHandler = (event) =>{
     return (
         <form>
             <label>
-            <input type="file" onChange={changeHandler}/>
+            <input className="label" type="file" onChange={changeHandler} placeholder="+"/>
             <span>+</span>
             </label>
             <div className="output">
