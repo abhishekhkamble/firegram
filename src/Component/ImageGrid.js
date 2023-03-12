@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
-// import useFirestore from "../Hooks/useFirestore";
 import { motion } from "framer-motion";
+import axios from "axios";
 
-function ImageGrid({ setSelectedImg }) {
-  // const {docs} = useFirestore('images')
+function ImageGrid({ uploadedImages, setSelectedImg }) {
   const [docs, setDocs] = useState([]);
+
   const getImages = async () => {
     try {
-      const data = await fetch("http://localhost:9090/api/v1/image", {
-        method: "GET",
-      });
-
-      const response = await data.json();
+      const data = await axios.get("http://localhost:9090/api/v1/image");
+      const response = await data.data;
       setDocs(response.result);
       console.log(response.result);
     } catch (error) {
@@ -21,7 +18,8 @@ function ImageGrid({ setSelectedImg }) {
 
   useEffect(() => {
     getImages();
-  }, [setSelectedImg]);
+  }, [uploadedImages]);
+
   console.log(docs);
   //   console.log(docs);
   return (

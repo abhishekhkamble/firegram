@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import ProgressBar from "./ProgressBar";
+import axios from "axios";
 
-function UploadForm() {
+function UploadForm({ onImageUpload }) {
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const changeHandler = (event) => {
     let selected = event.target.files[0];
@@ -14,21 +15,27 @@ function UploadForm() {
     if (selected && types.includes(selected.type)) {
       setFile(selected);
       setError("");
+      setUploadProgress(0);
 
       // upload api
       const formdata = new FormData();
       formdata.append("", selected, selected.name);
 
-      const requestOptions = {
-        method: "POST",
-        body: formdata,
-        redirect: "follow",
-      };
-
-      fetch("http://localhost:9090/api/v1/upload", requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.log("error", error));
+      axios
+        .post("http://localhost:9090/api/v1/upload", formdata, {
+          onUploadProgress: (progressEvent) => {
+            setUploadProgress(
+              Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            );
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          onImageUpload(response.data.result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       setFile(null);
       setError("Please select an image file (png or jpeg)");
@@ -49,7 +56,11 @@ function UploadForm() {
       <div className="output">
         {error && <div className="error">{error}</div>}
         {file && <div>{file.name}</div>}
-        {/* {file && <ProgressBar file={file} setFile={setFile}/>} */}
+        {uploadProgress > 0 && (
+          <progress value={uploadProgress} max="100">
+            {uploadProgress}%
+          </progress>
+        )}
       </div>
     </form>
   );
