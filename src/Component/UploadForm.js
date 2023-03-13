@@ -32,6 +32,9 @@ function UploadForm({ onImageUpload }) {
         .then((response) => {
           console.log(response);
           onImageUpload(response.data.result);
+          setTimeout(() => {
+            setUploadProgress(0);
+          }, 2000);
         })
         .catch((error) => {
           console.log(error);
